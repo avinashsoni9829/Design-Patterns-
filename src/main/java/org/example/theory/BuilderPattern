@@ -1,0 +1,87 @@
+A class may not need all its entities during Construction in this scene the Builder Pattern is Helpfull
+
+
+Class Cake {
+
+  private final double sugar;
+  private final double butter;
+  private final int eggs;
+  private final int vanilla;
+  private final double flour;
+  private final double bakingPowder;
+  private final double milk;
+  private final int cherry;
+
+
+  public Static class CakeBuilder{
+
+      // Entity are same as the original class
+      private final double sugar;
+      private final double butter;
+      private final int eggs;
+      private final int vanilla;
+      private final double flour;
+      private final double bakingPowder;
+      private final double milk;
+      private final int cherry;
+
+
+      public CakeBuilder sugar(double size)  {
+       this.sugar = size;
+       return this;
+      }
+
+      public CakeBuilder butter(double size)  {
+           this.butter = size;
+           return this;
+          }
+
+      public CakeBuilder eggs(int size)  {
+            this.eggs=size;
+            return this;
+           }
+
+      public CakeBuilder sugar(double size)  {
+            this.sugar = size;
+            return this;
+           }
+
+      public CakeBuilder vanilla(int size)
+      {
+            this.vanilla = size;
+            return this;
+      }
+       public CakeBuilder flour(int size)
+       {
+            this.flour = size;
+            return this;
+       }
+
+       public CakeBuilder bakingPowder(int size)
+       {
+            this.bakingPowder = size;
+            return this;
+       }
+
+       public CakeBuilder milk(double size){
+            this.milk = size;
+            return this;
+
+       }
+
+       public CakeBuilder cherry(int size){
+          this.cherry = size;
+          return this;
+       }
+
+
+       public Cake build(){
+        return new Cake(this);
+
+       }
+
+
+  }
+
+
+}

@@ -1,0 +1,74 @@
+Factory Pattern :
+
+Ingestion framework -> source data from multiple sources outside and then finally ingest into the database
+
+for each system we need to instantiate a correct object
+
+# class to source data from File
+
+public Interface IngesttoDatabase{
+ public void ingestData();
+}
+
+public class SourceDatafromFile implements IngestoDatabase {
+  @Override
+  public void ingestData(){
+   System.out.println("ingest data from file to database");
+  }
+
+}
+
+# class to source data from API
+
+public class SourceDatafromAPI implements  IngesttoDatabase {
+
+   @Override
+   public void ingestData(){
+    System.out.println("Ingestion of data from API")
+   }
+}
+
+
+# Class to source Data from Data Lake
+
+public class SourceDatafromDataLake implements  IngesttoDatabase {
+
+   @Override
+   public void ingestData(){
+    System.out.println("Ingestion of data from Data lake")
+   }
+}
+
+
+-> now we have all the  data objects ready  -> now we will define a service to do the ingestion to the database for us
+
+public class ingestionService{
+   public void ingestDatatoMyDb(){
+      SourceDatafromFile source = new SourceDatafromFile();
+      source.ingestData();
+   }
+}
+
+
+
+# main class
+
+public class FactoryMain(){
+   public static void main(String args){
+     ingestionService service = new ingestionService();
+     service.ingestDatatoMyDb();
+
+    }
+}
+
+now for other sources like api and data lake we have these choices
+-> create similar ingestDatatoMydb function for each of them
+-> pass the string and create objects acc to the name like api ,file  , datalake -> breaks Single Responsiblity Priniple
+
+-> also for future use this also breaks the OPEN_CLOSE principle
+
+therefore we need to modify this :
+
+we take out the changing code and create a new class to return the object as per the string and then use it in our
+service
+

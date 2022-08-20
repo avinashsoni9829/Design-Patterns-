@@ -1,0 +1,130 @@
+Combines the capability of two independent interfaces:
+Adapters can not only convert data into various formats but can also help objects with different interfaces collaborate.
+Types of adapter
+-> Object Adapter -> uses Composition Priniciple = implements interface of one and wraps the another
+-> Class Adapter -> uses Inheritance = inherit interface of both objects -> require multiple inheritance -> C++
+Convert One Interface into  another
+
+public interface MediaPlayer
+{
+    public void play(String audioType , String fileName);
+}
+
+
+public interface AdvancedMediaPlayer
+{
+    public void playVlc(String fileName);
+    public void playMp4(String fileName);
+}
+
+
+implementing AdvancedMediaPlayer
+
+public class VlcPlayer implements AdvancedMediaPlayer{
+
+     @Override
+     public void playVlc(String fileName){
+      System.out.println("Playing VLC media player" + fileName);
+      }
+
+      @Override
+      public void playMp4(String fileName){
+        // do nothing
+      }
+
+}
+
+public class MP4Player implements AdvancedMediaPlayer{
+
+    @Override
+    public void playVlc(String fileName){
+        // do nothing
+    }
+
+    @Override
+    public void playMp4(String fileName){
+      System.out.println("Playing file " + fileName);
+
+    }
+
+}
+
+
+====== Creating Adapter  -> Connects the Two Interfaces ===========
+
+
+public class MediaAdapter implements MediaPlayer{
+      // Create a Object
+      AdvancedMediaPlayer advancedMediaPlayer;
+      // create object as per audioType
+      public MediaPlayer(String audioType)
+      {
+            if(audioType.equalsIgnoreCase("vlc"))
+            advancedMediaPlayer = new VLcPlayer();
+            else if(audioType.equalsIgnoreCase("mp4"))
+            advancedMediaPlayer = new Mp4Player();
+      }
+
+      @Override
+      public void play(String audioType , String fileName){
+
+            if(audioType.equalsIgnoreCase("vlc"))
+            {
+               advancedMediaPlayer.playVlc(fileName);
+            }
+            else
+            if(audioType.equalsIgnoreCase("mp4"))
+            {
+               advancedMediaPlayer.playVlc(fileName);
+            }
+     }
+
+}
+
+
+=========== Audio Player  -> Uses the Adapter so that functionality of both the interface can be used ================
+
+public class AudioPlayer implements MediaPlayer
+{
+    MediaAdapter mediaAdapter;
+
+    @Override
+    public void play(String audioType , String fileName)
+    {
+        // inbuilt support to play mp3 music files
+         if(audioType.equalsIgnoreCase("mp3"))
+         System.out.println("playing the file " + fileName);
+         else if(audioType.equalsIgnoreCase("vlc")|| audioType.equalsIgnoreCase("mp4"))
+         {
+              mediaAdapter = new MediaAdapter(audioType);
+              mediaAdapter.play(audioType , fileName);
+         }
+         else
+           System.out.println("Invalid Media" + audioType + "format not supported");
+
+    }
+
+   }
+
+============== Main Class ==============
+
+public class AdapterPattern{
+      public static void main(String[] args){
+         AudioPlayer audioPlayer = new AudioPlayer();
+         audioPlayer.play("mp3","beyond the Horizon.mp3");
+         audioPlayer.play("mp4","alone.mp4");
+         audioPlayer.play("vlc","far far away.vlc");
+         audioPlayer.play("avi","mind me.avi");
+      }
+}
+
+
+
+
+
+
+
+
+
+
+

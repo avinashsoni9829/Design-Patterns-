@@ -1,0 +1,97 @@
+Decorator Pattern :
+allow user to add new functionality to an existing object without altering its structure
+
+ ->  creates a decorator class which wraps the original class and provides additional functionality keeping class methods signature
+     as same
+ ->
+
+#1
+
+public interface Shape {
+ void draw();
+}
+
+// Rectangle implementing Shape
+public class Rectangle implements Shape{
+      @Override
+      public void draw()
+      {
+       System.out.println("Shape : Rectangle");
+      }
+
+}
+
+// Circle  Implementing Shape
+
+public class Circle implements Shape{
+     @Override
+          public void draw()
+          {
+           System.out.println("Shape : Rectangle");
+          }
+}
+
+Creating the Abstract Decorator Class :
+
+public abstract class ShapeDecortator implements Shape {
+      protected Shape decoratedShape;
+
+      public ShapeDecorator(Shape decoratedShape){
+          this.decoratedShape = decoratedShape;
+      }
+
+
+      public void draw(){
+          decoratedShape.draw();
+      }
+
+
+}
+
+
+Creating the concerete decorator class extending the shapeDecorator class :
+
+
+public class RedShapeDecorator extends ShapeDecorator{
+
+    public RedShapeDecorator(Shape decoratedShape){
+        super(decoratedShape);
+    }
+
+    @Override
+    public void draw(){
+     decoratedShape.draw();
+     setRedBorder(decoratedShape);
+     }
+
+     private void setRedBorder(Shape decoratedShape){
+        System.out.println("Border color : RED");
+     }
+
+
+}
+
+
+#finally using the decorator pattern
+
+public static void main(){
+    Shape circle = new Circle();
+    Shape redCircle = new RedShapeDecorator(new Circle());
+
+    Shape redRectangle = new RedShapeDecorator(new Rectangle());
+
+    System.out.println("circle with normal border");
+    circle.draw();
+
+    redCircle.draw();
+
+}
+
+
+
+
+
+=================================================================================================
+
+
+

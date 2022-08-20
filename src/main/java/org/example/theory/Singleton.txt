@@ -1,0 +1,243 @@
+SingleTon Pattern :
+
+class ka sirf ek hi instance chahiye to singleton pattern ka use karna hoga
+ex  : Logging, configuration class , thread pools ,etc
+
+
+how to create a singleton class ?
+step 1 : make a private constructor
+step 2 : create a static method to get the instance of the class
+
+Simple Singleton class :
+
+class singleton{
+     private static singleton obj;
+     // creating private constructor
+     private singleton(){
+
+     }
+
+     // static method to get instance of the class
+
+       public static singleton getInstance(){
+          if(Object.isNull(obj)){
+             obj  = new Singleton();
+          }
+
+          return obj;
+       }
+}
+
+this breaks at :
+multithread
+seriliaze class
+clone class
+reflection
+
+
+
+# how to overcome the multithread issue :
+
+initialize the object at the time of declartion only so the same object will be returned whenever we are having multiple thread accessing
+the code .
+
+class singleton{
+     private static singleton obj = new singleton();
+     // creating private constructor
+     private singleton(){
+
+     }
+
+     // static method to get instance of the class
+
+       public static singleton getInstance(){
+          return obj;
+       }
+}
+
+now what if it is a resource intensive process while object creation -> mongo call or something
+then it will be at hold while multithreading so it is not a good choice
+
+how to overcome this now ?
+
+we will syncronize our class so that only single thread will particpate for once
+
+
+
+
+class singleton{
+     private static singleton obj;
+     // creating private constructor
+     private singleton(){
+
+     }
+
+     // static method to get instance of the class
+
+       public static  synchronized singleton getInstance(){
+          if(Object.isNull(obj)){
+             obj  = new Singleton();
+          }
+
+          return obj;
+       }
+}
+
+
+but here again this itself is a resource intensive procress so it will lock other thread to access the resource
+
+
+for this we will do this :
+volatile -> values changed in one thread should be visible in another thread as well
+
+class singleton{
+     private volatile static singleton obj;
+     // creating private constructor
+     private singleton(){
+
+     }
+
+     public static singleton getinstance(){
+          if(Objects.isNull(obj)){
+               synchronized(this.class){
+                 if(Objects.isNull(obj)){
+                     obj  = new singleton();
+                 }
+               }
+          }
+
+          return obj;
+     }
+
+}
+
+
+so now this solves our issues while multithreading as we lock the class once the object is null and rest of the time we send the object
+directly to any of the threads
+
+
+
+# Solving the issue when desearlization Happens :
+
+
+class singleton implements searlizable {
+     private volatile static singleton obj;
+     private singleton(){
+
+     }
+
+     private static singleton getinstance(){
+         if(Objects.isNull(obj)){
+             synchronized(this.class){
+                 if(Objects.isNull(obj)){
+                     obj = new singleton();
+                 }
+             }
+         }
+         return obj;
+     }
+
+     protected Object readresolve(){
+         return obj;
+     }
+}
+
+
+#solving the clone issue ?
+we simply implements the class using cloneable interface and give a exception upon cloning of the object of the class
+
+
+
+class singleton implements Cloneable {
+     private volatile static singleton obj;
+     private singleton(){
+
+     }
+
+     private static singleton getinstance(){
+         if(Objects.isNull(obj)){
+             synchronized(this.class){
+                 if(Objects.isNull(obj)){
+                     obj = new singleton();
+                 }
+             }
+         }
+         return obj;
+     }
+
+     protected Object clone() throws CloneNotSupportedException{
+         throw new CloneNotSupportedException();
+     }
+}
+
+#how to avoid reflection ?
+
+we will throw an exception in the constructor whenever we will create the same object as we do int reflection
+
+
+class singleton  {
+     private volatile static singleton obj;
+     private singleton(){
+       if(Objects.isNull(obj)){
+         throw new IllegalStateException("object already created");
+
+       }
+     }
+
+     private static singleton getinstance(){
+         if(Objects.isNull(obj)){
+             synchronized(this.class){
+                 if(Objects.isNull(obj)){
+                     obj = new singleton();
+                 }
+             }
+         }
+         return obj;
+     }
+
+
+}
+
+
+
+
+finally the complete singleton class :
+
+
+class singleton implements  Cloneable,Searlizable {
+     private volatile static singleton obj;
+     private singleton(){
+       if(Objects.isNull(obj)){
+         throw new IllegalStateException("object already created");
+
+       }
+     }
+
+     private static singleton getinstance(){
+         if(Objects.isNull(obj)){
+             synchronized(this.class){
+                 if(Objects.isNull(obj)){
+                     obj = new singleton();
+                 }
+             }
+         }
+         return obj;
+     }
+
+     protected Object clone() throws CloneNotSupportedException{
+         throw new CloneNotSupportedException();
+     }
+
+      protected Object readresolve(){
+         return obj;
+     }
+
+}
+
+
+advantages :
+1) saves memory
+2) used in multithreaded applications , database applications
+
+static ->  get memory only once
+private constructor -> prevent to instantiate the singleton class from outside the class
